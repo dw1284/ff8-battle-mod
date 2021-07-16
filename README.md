@@ -12,6 +12,10 @@ CTRL+R to refresh the window
 
 # Distribution
 
+**Build only:**
+
+- npm run pack
+
 **Build and create installer:**
 
 - npm run dist

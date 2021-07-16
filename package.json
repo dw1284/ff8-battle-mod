@@ -3,10 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "main": "index.js",
+  "build": {
+    "appId": "ff8-battle-mod",
+    "npmRebuild": false,
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "electron .",
+    "pack": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder"
   },
   "devDependencies": {
@@ -22,6 +30,7 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
+    "memoryjs": "^3.4.0",
     "sirv-cli": "^1.0.0"
   }
 }
