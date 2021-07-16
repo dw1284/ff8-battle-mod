@@ -46,7 +46,6 @@
 	}
 	
 	button-panel button {
-		color: blue;
     text-decoration: underline;
     border: none;
     background: none;

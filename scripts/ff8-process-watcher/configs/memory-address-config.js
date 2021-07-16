@@ -10,6 +10,7 @@ module.exports = {
     valueTransformerOut: val => val > 1000000000, // This address points to another address, and the higher that address the more likely we are in battle
     valueTransformerIn: null
   },
+  // Enemies in battle (4 slots)
   currentHealthEnemy1: {
     address: 0x01D27D98,
     offsets: [],
@@ -29,9 +30,9 @@ module.exports = {
   isDeadEnemy1: {
     address: 0x01D27E00,
     offsets: [],
-    type: 'int',
+    type: 'byte',
     size: null,
-    valueTransformerOut: val => val === 1 || val === 65537,
+    valueTransformerOut: val => val === 1,
     valueTransformerIn: null
   },
   displayNameEnemy1: {
@@ -69,9 +70,9 @@ module.exports = {
   isDeadEnemy2: {
     address: 0x01D27ED0,
     offsets: [],
-    type: 'int',
+    type: 'byte',
     size: null,
-    valueTransformerOut: val => val === 1 || val === 65537,
+    valueTransformerOut: val => val === 1,
     valueTransformerIn: null
   },
   displayNameEnemy2: {
@@ -109,9 +110,9 @@ module.exports = {
   isDeadEnemy3: {
     address: 0x01D27FA0,
     offsets: [],
-    type: 'int',
+    type: 'byte',
     size: null,
-    valueTransformerOut: val => val === 1 || val === 65537,
+    valueTransformerOut: val => val === 1,
     valueTransformerIn: null
   },
   displayNameEnemy3: {
@@ -149,9 +150,9 @@ module.exports = {
   isDeadEnemy4: {
     address: 0x01D28070,
     offsets: [],
-    type: 'int',
+    type: 'byte',
     size: null,
-    valueTransformerOut: val => val === 1 || val === 65537,
+    valueTransformerOut: val => val === 1,
     valueTransformerIn: null
   },
   displayNameEnemy4: {
@@ -178,6 +179,7 @@ module.exports = {
     valueTransformerOut: val => _.isEqual(val, [232,22,112,0,0]), // If the bytes have been replaced with noops (144) return false, otherwise true
     valueTransformerIn: val => val ? [232,22,112,0,0] : [144,144,144,144,144]
   },
+  // PartyMembers in battle (3 slots)
   teamMemberIdPartyMember1: {
     address: 0x01CFE74C,
     offsets: [],
@@ -197,7 +199,7 @@ module.exports = {
   maxHealthPartyMember1: {
     address: 0x01CFF174,
     offsets: [],
-    type: 'int',
+    type: 'short',
     size: null,
     valueTransformerOut: null,
     valueTransformerIn: null
@@ -221,7 +223,7 @@ module.exports = {
   maxHealthPartyMember2: {
     address: 0x01CFF344,
     offsets: [],
-    type: 'int',
+    type: 'short',
     size: null,
     valueTransformerOut: null,
     valueTransformerIn: null
@@ -245,7 +247,32 @@ module.exports = {
   maxHealthPartyMember3: {
     address: 0x01CFF514,
     offsets: [],
-    type: 'int',
+    type: 'short',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  // Team Members (in general, no association to a battle)
+  maxHealthModifier1TeamMemberSquall: {
+    address: 0x01CF75F4,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  maxHealthModifier2TeamMemberSquall: {
+    address: 0x01CF75F6,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  healthBonusSpellTeamMemberSquall: {
+    address: 0x01CFE144,
+    offsets: [],
+    type: 'byte',
     size: null,
     valueTransformerOut: null,
     valueTransformerIn: null
@@ -260,14 +287,6 @@ module.exports = {
   },
   currentHealthTeamMemberSquall: {
     address: 0x01CFE0E8,
-    offsets: [],
-    type: 'int',
-    size: null,
-    valueTransformerOut: null,
-    valueTransformerIn: null
-  },
-  maxHealthTeamMemberSquall: {
-    address: 0x01D771BA,
     offsets: [],
     type: 'short',
     size: null,
@@ -306,6 +325,30 @@ module.exports = {
     valueTransformerOut: null,
     valueTransformerIn: null
   },
+  maxHealthModifier1TeamMemberZell: {
+    address: 0x01CF7618,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  maxHealthModifier2TeamMemberZell: {
+    address: 0x01CF761A,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  healthBonusSpellTeamMemberZell: {
+    address: 0x01CFE1DC,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
   displayNameTeamMemberZell: {
     address: 0x01CFA1AC,
     offsets: [],
@@ -316,14 +359,6 @@ module.exports = {
   },
   currentHealthTeamMemberZell: {
     address: 0x01CFE180,
-    offsets: [],
-    type: 'int',
-    size: null,
-    valueTransformerOut: null,
-    valueTransformerIn: null
-  },
-  maxHealthTeamMemberZell: {
-    address: 0x01D771DA,
     offsets: [],
     type: 'short',
     size: null,
@@ -362,6 +397,30 @@ module.exports = {
     valueTransformerOut: null,
     valueTransformerIn: null
   },
+  maxHealthModifier1TeamMemberIrvine: {
+    address: 0x01CF763C,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  maxHealthModifier2TeamMemberIrvine: {
+    address: 0x01CF763E,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  healthBonusSpellTeamMemberIrvine: {
+    address: 0x01CFE274,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
   displayNameTeamMemberIrvine: {
     address: 0x01CFA1B1,
     offsets: [],
@@ -372,14 +431,6 @@ module.exports = {
   },
   currentHealthTeamMemberIrvine: {
     address: 0x01CFE218,
-    offsets: [],
-    type: 'int',
-    size: null,
-    valueTransformerOut: null,
-    valueTransformerIn: null
-  },
-  maxHealthTeamMemberIrvine: {
-    address: 0x01D771FA,
     offsets: [],
     type: 'short',
     size: null,
@@ -418,6 +469,30 @@ module.exports = {
     valueTransformerOut: null,
     valueTransformerIn: null
   },
+  maxHealthModifier1TeamMemberQuistis: {
+    address: 0x01CF7660,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  maxHealthModifier2TeamMemberQuistis: {
+    address: 0x01CF7662,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  healthBonusSpellTeamMemberQuistis: {
+    address: 0x01CFE30C,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
   displayNameTeamMemberQuistis: {
     address: 0x01CFA1B8,
     offsets: [],
@@ -428,14 +503,6 @@ module.exports = {
   },
   currentHealthTeamMemberQuistis: {
     address: 0x01CFE2B0,
-    offsets: [],
-    type: 'int',
-    size: null,
-    valueTransformerOut: null,
-    valueTransformerIn: null
-  },
-  maxHealthTeamMemberQuistis: {
-    address: 0x01D7721A,
     offsets: [],
     type: 'short',
     size: null,
@@ -474,6 +541,30 @@ module.exports = {
     valueTransformerOut: null,
     valueTransformerIn: null
   },
+  maxHealthModifier1TeamMemberRinoa: {
+    address: 0x01CF7684,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  maxHealthModifier2TeamMemberRinoa: {
+    address: 0x01CF7686,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  healthBonusSpellTeamMemberRinoa: {
+    address: 0x01CFE3A4,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
   displayNameTeamMemberRinoa: {
     address: 0x01CFDC7C,
     offsets: [],
@@ -484,14 +575,6 @@ module.exports = {
   },
   currentHealthTeamMemberRinoa: {
     address: 0x01CFE348,
-    offsets: [],
-    type: 'int',
-    size: null,
-    valueTransformerOut: null,
-    valueTransformerIn: null
-  },
-  maxHealthTeamMemberRinoa: {
-    address: 0x01D7723A,
     offsets: [],
     type: 'short',
     size: null,
@@ -530,6 +613,30 @@ module.exports = {
     valueTransformerOut: null,
     valueTransformerIn: null
   },
+  maxHealthModifier1TeamMemberSelphie: {
+    address: 0x01CF76A8,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  maxHealthModifier2TeamMemberSelphie: {
+    address: 0x01CF76AA,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  healthBonusSpellTeamMemberSelphie: {
+    address: 0x01CFE43C,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
   displayNameTeamMemberSelphie: {
     address: 0x01CFA1C0,
     offsets: [],
@@ -540,14 +647,6 @@ module.exports = {
   },
   currentHealthTeamMemberSelphie: {
     address: 0x01CFE3E0,
-    offsets: [],
-    type: 'int',
-    size: null,
-    valueTransformerOut: null,
-    valueTransformerIn: null
-  },
-  maxHealthTeamMemberSelphie: {
-    address: 0x01D7725A,
     offsets: [],
     type: 'short',
     size: null,
@@ -586,6 +685,30 @@ module.exports = {
     valueTransformerOut: null,
     valueTransformerIn: null
   },
+  maxHealthModifier1TeamMemberSeifer: {
+    address: 0x01CF76CC,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  maxHealthModifier2TeamMemberSeifer: {
+    address: 0x01CF76CE,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  healthBonusSpellTeamMemberSeifer: {
+    address: 0x01CFE4D4,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
   displayNameTeamMemberSeifer: {
     address: 0x01CFA1C8,
     offsets: [],
@@ -596,14 +719,6 @@ module.exports = {
   },
   currentHealthTeamMemberSeifer: {
     address: 0x01CFE478,
-    offsets: [],
-    type: 'int',
-    size: null,
-    valueTransformerOut: null,
-    valueTransformerIn: null
-  },
-  maxHealthTeamMemberSeifer: {
-    address: 0x01D7727A,
     offsets: [],
     type: 'short',
     size: null,
@@ -642,6 +757,30 @@ module.exports = {
     valueTransformerOut: null,
     valueTransformerIn: null
   },
+  maxHealthModifier1TeamMemberEdea: {
+    address: 0x01CF76F0,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  maxHealthModifier2TeamMemberEdea: {
+    address: 0x01CF76F2,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
+  healthBonusSpellTeamMemberEdea: {
+    address: 0x01CFE56C,
+    offsets: [],
+    type: 'byte',
+    size: null,
+    valueTransformerOut: null,
+    valueTransformerIn: null
+  },
   displayNameTeamMemberEdea: {
     address: 0x01CFA1CF,
     offsets: [],
@@ -652,14 +791,6 @@ module.exports = {
   },
   currentHealthTeamMemberEdea: {
     address: 0x01CFE510,
-    offsets: [],
-    type: 'int',
-    size: null,
-    valueTransformerOut: null,
-    valueTransformerIn: null
-  },
-  maxHealthTeamMemberEdea: {
-    address: 0x01D7729A,
     offsets: [],
     type: 'short',
     size: null,

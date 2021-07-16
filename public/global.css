@@ -1,7 +1,11 @@
 body {
-	color: #333;
+	background: linear-gradient(180deg, #4C4C4C, #00000075);
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	color: white;
+	text-shadow: 1px 1px black;
 	margin: 0;
-	padding: 8px;
+	padding: 20px 8px;
 	box-sizing: border-box;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }

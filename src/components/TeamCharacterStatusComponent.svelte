@@ -30,7 +30,7 @@
   };
   
   function onConfirmClick() {
-    const maxValue = (propertyToEdit === 'currentHealth') ? character.maxHealth : newValue;
+    const maxValue = (propertyToEdit === 'currentHealth') ? calcMaxHealth(character) : newValue;
     const data = {[propertyToEdit]: Math.min(newValue, maxValue)};
     if (data.maxHealth < character.currentHealth)
       data.currentHealth = data.maxHealth;
@@ -47,6 +47,17 @@
   function onMagicChange() {
     onTeamCharacterStatusChange(character.name, {magic: character.magic});
   };
+  
+  function calcMaxHealth(targetCharacter) {
+    const {currentLevel: lvl, maxHealthModifier1: mod1, maxHealthModifier2: mod2, healthBonusSpell: bonusSpellId} = targetCharacter;
+    const bonusMultiplier = _.find(magicSpells, {id: bonusSpellId}).hpBonusModifier;
+    const bonusQuantity = _.get(_.find(character.magic, magicSlot => magicSlot[0] === bonusSpellId), 1, 0);
+    const bonusHp = bonusQuantity * bonusMultiplier;
+    return (bonusHp-Math.floor(((lvl*lvl)+((lvl*lvl)*4))*2/255))+lvl*mod1+mod2;
+  };
+  
+  // Computed values
+  $: maxHealth = calcMaxHealth(character);
 </script>
 
 <character-status>
@@ -61,7 +72,7 @@
       <stat-name>Health:</stat-name>
       <stat class="health" on:click={() => {onEditClick('currentHealth')}}>{character.currentHealth}</stat>
       <stat-separator>/</stat-separator>
-      <stat class="health" on:click={() => {onEditClick('maxHealth')}}>{character.maxHealth}</stat>
+      <stat class="health" on:click={() => {onEditClick('maxHealth')}}>{maxHealth}</stat>
     </statline>
     <statline>
       <magic-editor>
@@ -89,7 +100,7 @@
 <style>
 	character-status {
 		display: flex;
-    font-weight: bold;
+    font-weight: 500;
     margin-left: 15px;
     margin-right: 15px;
     margin-bottom: 10px;
@@ -128,7 +139,6 @@
     text-decoration: underline;
     font-weight: 600;
     font-size: 16px;
-    color: blue;
     margin-right: 10px;
     width: 24px;
   }

@@ -79,7 +79,6 @@
   
   statline {
     display: flex;
-    color: blue;
   }
   
   stat {
