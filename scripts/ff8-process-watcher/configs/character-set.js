@@ -1,3 +1,7 @@
+// In this game, text is encoded before being stored in memory.
+// We need to be able to decode the text in order to find things
+// like character names, enemy names, etc.
+
 module.exports = {
   32: ' ', 33: '0', 34: '1', 35: '2', 36: '3',  37: '4', 38: '5', 39: '6', 40: '7',
   41: '8', 42: '9', 43: '%', 44: '/', 45: ':', 46: '!', 47: '?', 48: '⋯', 49: '+',
