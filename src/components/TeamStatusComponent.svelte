@@ -13,6 +13,9 @@
 		{#each editableTeamMembers as teamMember}
 			<TeamCharacterStatusComponent character={_.cloneDeep(teamMember)} onTeamCharacterStatusChange={onTeamMemberChange} />
 		{/each}
+		{#each editableTeamMembers as teamMember}
+			<spacer />
+		{/each}
 	</team-members>
 </team-status>
 
@@ -20,5 +23,11 @@
 	team-members {
 		display: flex;
 		flex-wrap: wrap;
+		justify-content: space-evenly;
+		padding: 20px;
+	}
+	
+	spacer {
+		width: 336px;
 	}
 </style>

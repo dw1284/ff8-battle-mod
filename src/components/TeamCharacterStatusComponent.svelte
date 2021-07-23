@@ -101,9 +101,7 @@
 	character-status {
 		display: flex;
     font-weight: 500;
-    margin-left: 15px;
-    margin-right: 15px;
-    margin-bottom: 10px;
+    margin: 10px 15px;
 	}
   
   portrait {
