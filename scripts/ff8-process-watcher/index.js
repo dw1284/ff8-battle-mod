@@ -1,16 +1,10 @@
 const memoryjs = require('memoryjs');
-const processConfig = require('./configs/process-config');
 const memoryAddressConfig = require('./configs/memory-address-config');
 const events = require('events');
 const _ = require('lodash');
+const {deepScrape} = require('../utilities');
 
-const configsGroupedByAddress = _.reduce(memoryAddressConfig, (accumulator, addressConfig, propName) => {
-  const trimmedConfig = _.pick(addressConfig, ['address', 'offsets', 'type', 'size']);
-  const existingConfig = _.find(accumulator, trimmedConfig);
-  const newProp = {propName, valueTransformerOut: addressConfig.valueTransformerOut, valueTransformerIn: addressConfig.valueTransformerIn};
-  existingConfig ? existingConfig.props.push(newProp) : accumulator.push(_.set(trimmedConfig, 'props', [newProp]));
-  return accumulator;
-}, []);
+const allLocations = _.uniq(_.flatten(deepScrape(memoryAddressConfig, 'locations')));
 
 // Public API
 const createWatcher = () => {
@@ -35,11 +29,23 @@ const createWatcher = () => {
   };
   
   this.events.on('updateGameValue', (propertyName, val) => {
-    const {address, type, valueTransformerIn} = _.get(memoryAddressConfig, propertyName);
-    val = valueTransformerIn ? valueTransformerIn(val) : val;
-    type === 'bytes'
-      ? writeBuffer(this.mainProcess.handle, address, val)
-      : memoryjs.writeMemory(this.mainProcess.handle, address, val, type);
+    const {locations, valueTransformerIn} = _.get(memoryAddressConfig, propertyName);
+    
+    const prevVals = _.map(locations, ({address, offsets, type, size}) => {
+      const targetAddress = !_.isEmpty(offsets) ? resolvePointerAddress(address, offsets) : address;
+      return type === 'bytes'
+        ? readBuffer(watcher.mainProcess.handle, targetAddress, size)
+        : memoryjs.readMemory(watcher.mainProcess.handle, targetAddress, type);
+    });
+    
+    const newVals = valueTransformerIn ? valueTransformerIn(val, prevVals) : val;
+    
+    _.each(_.castArray(locations), ({address, type}, index) => {
+      const valToWrite = newVals[index];
+      type === 'bytes'
+        ? writeBuffer(this.mainProcess.handle, address, valToWrite)
+        : memoryjs.writeMemory(this.mainProcess.handle, address, valToWrite, type);
+    });
   });
   
   return this;
@@ -50,22 +56,18 @@ let gameInterval = null;
 
 // Keep a lookout for the emulator process
 function watchForProcess() {
-  const processes = memoryjs.getProcesses();
   if (!watcher.mainProcess) {
-    for (let emulator of processConfig) {
-      watcher.mainProcess = openProcess(emulator.processName, processes);
+    watcher.mainProcess = openProcess('FF8_EN.exe');
+    if (watcher.mainProcess) {
       console.log(watcher.mainProcess);
-      watcher.emulator = emulator;
-      if (watcher.mainProcess) {
-        watcher.stopWatching();
-        gameInterval = setInterval(getUpdatedValuesFromProcess, 150);
-        break;
-      }
-    };
+      watcher.stopWatching();
+      gameInterval = setInterval(getUpdatedValuesFromProcess, 150);
+    }
   }
 };
 
-function openProcess(processName, processes) {
+function openProcess(processName) {
+  const processes = memoryjs.getProcesses();
   if (_.find(processes, {szExeFile: processName})) {
     return memoryjs.openProcess(processName);
   } else {
@@ -75,29 +77,26 @@ function openProcess(processName, processes) {
 
 function getUpdatedValuesFromProcess() {
   try {
-    const deltasObj = _.reduce(configsGroupedByAddress, (accumulator, addressConfig) => {
-      const {address, offsets, type, size, props} = addressConfig;
+    const locationValues = _.map(allLocations, ({address, offsets, type, size}) => {
       const targetAddress = !_.isEmpty(offsets) ? resolvePointerAddress(address, offsets) : address;
-      
-      const currValFromProcess = 
-        type === 'bytes'
-          ? readBuffer(watcher.mainProcess.handle, targetAddress, size)
-          : memoryjs.readMemory(watcher.mainProcess.handle, targetAddress, type);
-      
-      _.each(props, ({propName, valueTransformerOut}) => {
-        const prevVal = _.cloneDeep(watcher.gameValues[propName]);
-        const newVal = _.cloneDeep(currValFromProcess);
+      return type === 'bytes'
+        ? readBuffer(watcher.mainProcess.handle, targetAddress, size)
+        : memoryjs.readMemory(watcher.mainProcess.handle, targetAddress, type);
+    });
+    
+    const deltasObj = _.reduce(memoryAddressConfig, (deltasObjResult, {locations, valueTransformerOut}, propName) => {
+      const prevVals = _.cloneDeep(watcher.gameValues[propName]) || [];
+      const newVals = _.map(locations, location => _.cloneDeep(locationValues[_.findIndex(allLocations, location)]));
         
-        if (!_.isEqual(prevVal, newVal)) {
-          watcher.gameValues[propName] = newVal;
-          _.set(accumulator, propName, {
-            prevVal: valueTransformerOut ? valueTransformerOut(prevVal) : prevVal,
-            newVal: valueTransformerOut ? valueTransformerOut(newVal) : newVal
-          });
-        }
-      });
+      if (!_.isEqual(prevVals, newVals) && valueTransformerOut) {
+        watcher.gameValues[propName] = newVals;
+        _.set(deltasObjResult, propName, {
+          prevVal: valueTransformerOut(prevVals),
+          newVal: valueTransformerOut(newVals)
+        });
+      }
       
-      return accumulator;
+      return deltasObjResult;
     }, {});
     
     if (!_.isEmpty(deltasObj)) {
