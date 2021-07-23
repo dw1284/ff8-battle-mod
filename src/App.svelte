@@ -1,7 +1,11 @@
 <script>
 	import _ from 'lodash';
+	import MenuDrawerComponent from './components/MenuDrawerComponent.svelte';
+	import PartyEditMenu from './components/PartyEditMenu.svelte';
 	import TeamStatusComponent from './components/TeamStatusComponent.svelte';
 	import BattleStatusComponent from './components/BattleStatusComponent.svelte';
+	
+	let ff8MenuIsOpen = false;
 	
 	const team = {
 		members: [{id: 0, name: 'Squall'}, {id: 1, name: 'Zell'}, {id: 2, name: 'Irvine'}, {id: 3, name: 'Quistis'}, {id: 4, name: 'Rinoa'}, {id: 5, name: 'Selphie'}, {id: 6, name: 'Seifer'}, {id: 7, name: 'Edea'}],
@@ -15,12 +19,9 @@
 		},
 		
 		sendUpdatedTeamMemberValues: (teamMemberName, data) => {
-			const teamMemberToUpdate = _.find(team.members, {name: teamMemberName});
 			_.each(data, (val, key) => {
-				if (!_.isEqual(_.get(teamMemberToUpdate, key), val)) {
-					const attributeName = `${key}TeamMember${teamMemberName}`;
-					ff8ProcessWatcherEventEmit('updateGameValue', attributeName, val);
-				}
+				const attributeName = `${key}TeamMember${teamMemberName}`;
+				ff8ProcessWatcherEventEmit('updateGameValue', attributeName, val);
 			});
 		},
 	};
@@ -48,27 +49,41 @@
 		},
 		
 		sendUpdatedEnemyValues: (enemyId, data) => {
-			const enemyToUpdate = _.find(battle.enemies, {id: enemyId});
 			_.each(data, (val, key) => {
-				if (!_.isEqual(_.get(enemyToUpdate, key), val)) {
-					const attributeName = `${key}Enemy${enemyId}`;
-					ff8ProcessWatcherEventEmit('updateGameValue', attributeName, val);
-				}
+				const attributeName = `${key}Enemy${enemyId}`;
+				ff8ProcessWatcherEventEmit('updateGameValue', attributeName, val);
 			});
 		},
 		
 		sendUpdatedPartyMemberValues: (partyMemberId, data) => {
-			const partyMemberToUpdate = _.find(battle.partyMembers, {id: partyMemberId});
 			_.each(data, (val, key) => {
-				if (!_.isEqual(_.get(partyMemberToUpdate, key), val)) {
-					const attributeName = `${key}PartyMember${partyMemberId}`;
-					ff8ProcessWatcherEventEmit('updateGameValue', attributeName, val);
-				}
+				const attributeName = `${key}PartyMember${partyMemberId}`;
+				ff8ProcessWatcherEventEmit('updateGameValue', attributeName, val);
 			});
 		},
 		
 		killAllEnemies: () => {
-			_.each(battle.enemies, enemy => battle.sendUpdatedEnemyValues(enemy.id, {currentStatus: 4194304, isDead: 1}));
+			// It was very difficult to find a way to inflict damage on an enemy in such a way that would trigger its death
+			// animation and give experience points for its death. The way we do it is to inject some code that modified the
+			// poison damage calculation routine and makes the next poison tick inflict a lethal amount of damage. We also
+			// force the enemy's ATB guage to full, and disable its ability to attack, which forces a poison tick.
+			// TLDR: We exploit the poison damage routine in order to inflict instant kills on these enemies
+			const originalAttackEnabledVal = battle.enemyAttacksEnabled;
+			// Enable code injections
+			ff8ProcessWatcherEventEmit('updateGameValue', 'enemyAttacksEnabled', false);
+			ff8ProcessWatcherEventEmit('updateGameValue', 'damageLimitEnabled', false);
+			ff8ProcessWatcherEventEmit('updateGameValue', 'killOnNextPoisonTick', true);
+			// Force a poison tick on each enemy
+			_.each(battle.enemies, enemy => battle.sendUpdatedEnemyValues(enemy.id, {hasPoisonWithoutAnimation: true, atb: 46}));
+			// Wait for enemies to die then undo code injections
+			let interval = setInterval(() => {
+				if (_.every(battle.enemies, {currentHealth: 0})) {
+					ff8ProcessWatcherEventEmit('updateGameValue', 'killOnNextPoisonTick', false);
+					ff8ProcessWatcherEventEmit('updateGameValue', 'damageLimitEnabled', true);
+					ff8ProcessWatcherEventEmit('updateGameValue', 'enemyAttacksEnabled', originalAttackEnabledVal);
+					clearInterval(interval);
+				}
+			}, 50);
 		},
 		
 		toggleEnemyAttacksEnabled: () => {
@@ -85,7 +100,7 @@
 		}
 	};
 	
-	window.onFf8ProcessWatcherEventEmit('gameValuesUpdated', (deltasObject) => {      
+	onFf8ProcessWatcherEventEmit('gameValuesUpdated', (deltasObject) => {
 		_.each(deltasObject, ({newVal, prevVal}, updatedPropertyName) => {
 			if (updatedPropertyName.match(/Enemy/g)) {
 				battle.receiveUpdatedEnemyValue(updatedPropertyName, newVal);
@@ -97,6 +112,8 @@
 				battle.started = newVal;
 			} else if (updatedPropertyName === 'enemyAttacksEnabled') {
 				battle.enemyAttacksEnabled = newVal;
+			} else if (updatedPropertyName === 'menuIsOpen') {
+				ff8MenuIsOpen = newVal;
 			}
 		});
 	});
@@ -111,6 +128,14 @@
 </script>
 
 <app>
+	<MenuDrawerComponent maxHeight='250px'>
+		<PartyEditMenu
+			partyMembers={battle.partyMembers}
+			teamMembers={team.members}
+			onPartyMemberChange={battle.sendUpdatedPartyMemberValues}
+			onTeamMemberChange={team.sendUpdatedTeamMemberValues}
+			disabled={ff8MenuIsOpen ? ['main-party'] : false} />
+	</MenuDrawerComponent>
 	{#if battle.started}
 		<BattleStatusComponent
 			enemies={battle.enemies}
