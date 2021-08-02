@@ -118,8 +118,11 @@
 		});
 	});
 	
-	// Computed values
+	// We won't render the team component until every team member has received its values from memory
 	$: teamReady = _.every(team.members, teamMember => _.has(teamMember, 'magic'));
+  
+  // Party slots hold an ID representing the team member currently occupying the slot
+  // Go retrieve the displayName of each team member currently occupying the party slots
 	$: {
 		_.each(battle.partyMembers, partyMember => {
 			partyMember.displayName = _.get(_.find(team.members, {id: partyMember.teamMemberId}), 'displayName', partyMember.name);

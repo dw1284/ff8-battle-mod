@@ -28,9 +28,11 @@ const createWatcher = () => {
     this.startWatching();
   };
   
+  // Event watcher: Receive updated values and write them to memory
   this.events.on('updateGameValue', (propertyName, val) => {
     const {locations, valueTransformerIn} = _.get(memoryAddressConfig, propertyName);
     
+    // Some of the transformers need to know what the previous values were in order to calculate the new values
     const prevVals = _.map(locations, ({address, offsets, type, size}) => {
       const targetAddress = !_.isEmpty(offsets) ? resolvePointerAddress(address, offsets) : address;
       return type === 'bytes'
@@ -38,8 +40,10 @@ const createWatcher = () => {
         : memoryjs.readMemory(watcher.mainProcess.handle, targetAddress, type);
     });
     
+    // Calculate the new values by calling the transformer (if there is one)
     const newVals = valueTransformerIn ? valueTransformerIn(val, prevVals) : val;
     
+    // Write the new values to memory
     _.each(_.castArray(locations), ({address, type}, index) => {
       const valToWrite = newVals[index];
       type === 'bytes'
@@ -54,7 +58,7 @@ const createWatcher = () => {
 const watcher = createWatcher();
 let gameInterval = null;
 
-// Keep a lookout for the process
+// Keep a lookout for the main process
 function watchForProcess() {
   if (!watcher.mainProcess) {
     watcher.mainProcess = openProcess('FF8_EN.exe');
@@ -77,6 +81,7 @@ function openProcess(processName) {
 
 function getUpdatedValuesFromProcess() {
   try {
+    // First, lets retrieve all tracked values from memory
     const locationValues = _.map(allLocations, ({address, offsets, type, size}) => {
       const targetAddress = !_.isEmpty(offsets) ? resolvePointerAddress(address, offsets) : address;
       return type === 'bytes'
@@ -84,21 +89,26 @@ function getUpdatedValuesFromProcess() {
         : memoryjs.readMemory(watcher.mainProcess.handle, targetAddress, type);
     });
     
-    const deltasObj = _.reduce(memoryAddressConfig, (deltasObjResult, {locations, valueTransformerOut}, propName) => {
+    // Detect changes for each property
+    const deltasObj = _.reduce(memoryAddressConfig, (accumulator, {locations, valueTransformerOut}, propName) => {
       const prevVals = _.cloneDeep(watcher.gameValues[propName]) || [];
       const newVals = _.map(locations, location => _.cloneDeep(locationValues[_.findIndex(allLocations, location)]));
-        
+      
+      // Compare raw memory values first, we will only transform if something changed
       if (!_.isEqual(prevVals, newVals) && valueTransformerOut) {
+        // Store the raw value on the watcher
         watcher.gameValues[propName] = newVals;
-        _.set(deltasObjResult, propName, {
+        // Store the transformed value on the deltasObject
+        _.set(accumulator, propName, {
           prevVal: valueTransformerOut(prevVals),
           newVal: valueTransformerOut(newVals)
         });
       }
       
-      return deltasObjResult;
+      return accumulator;
     }, {});
     
+    // Issue a change event notifying subscribers that we received new values
     if (!_.isEmpty(deltasObj)) {
       watcher.events.emit(`gameValuesUpdated`, deltasObj);
     }

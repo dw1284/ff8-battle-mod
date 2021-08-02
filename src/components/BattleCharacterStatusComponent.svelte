@@ -48,12 +48,14 @@
 </script>
 
 <character-status>
+  <!-- Render the character's stats -->
   <name>{character.displayName || character.name}:</name>
   <statline>
     <stat name="current-health" on:click={() => {onEditClick('currentHealth')}}>{currentHealth}</stat>
     <stat-separator>/</stat-separator>
     <stat name="max-health" on:click={() => {onEditClick('maxHealth')}}>{maxHealth}</stat>
   </statline>
+  <!-- Edit panel only shows up when the user is editing a value -->
   {#if propertyToEdit}
     <div class="property-edit-panel">
       <NumericInput bind:value={newValue} on:keydown={onInputKeydown} onInit={onInputInit} />
