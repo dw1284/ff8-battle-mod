@@ -54,7 +54,7 @@ const createWatcher = () => {
 const watcher = createWatcher();
 let gameInterval = null;
 
-// Keep a lookout for the emulator process
+// Keep a lookout for the process
 function watchForProcess() {
   if (!watcher.mainProcess) {
     watcher.mainProcess = openProcess('FF8_EN.exe');
