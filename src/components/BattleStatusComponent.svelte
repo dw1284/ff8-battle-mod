@@ -12,7 +12,7 @@
 		{#each enemies as enemy}
 			<BattleCharacterStatusComponent character={enemy} onBattleCharacterStatusChange={onEnemyChange} />
 		{/each}
-    <!-- Some actions the user can take on the enemies -->
+    <!-- Actions the user can take on the enemies -->
 		<button-panel>
 			<button on:click={onKillAllEnemiesClick}>Kill All</button>
 			<button on:click={onDisableEnableEnemyAttacksClick}>{enemyAttacksEnabled ? 'Disable' : 'Enable'} Attacks</button>
@@ -24,7 +24,7 @@
 		{#each partyMembers as partyMember}
 			<BattleCharacterStatusComponent character={partyMember} onBattleCharacterStatusChange={onPartyMemberChange} />
 		{/each}
-    <!-- Some actions the user can take on the party members -->
+    <!-- Actions the user can take on the party members -->
 		<button-panel>
 			<button on:click={onCureAllPartyMembersClick}>Cure All</button>
 		</button-panel>
