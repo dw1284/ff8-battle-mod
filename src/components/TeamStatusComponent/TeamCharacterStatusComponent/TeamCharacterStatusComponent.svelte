@@ -1,7 +1,7 @@
 <script>
   import _ from 'lodash';
   import NumericInput from '../../NumericInput.svelte';
-  import magicSpells from '../../../../../configs/magic-spells';
+  import magicSpells from '../../../configs/magic-spells';
   
 	export let character;
   export let onTeamCharacterStatusChange = _.noop;
