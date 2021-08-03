@@ -6,7 +6,7 @@
   
   let isOpen = false;
   let transitionsEnabled = true;
-  let currentHeight, currentWidth;
+  let currentHeight, currentWidth; // These are bound to the content container and auto-calculated by svelte
   
   function toggleDrawerState() {
     isOpen = !isOpen;
