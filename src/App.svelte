@@ -131,7 +131,7 @@
 </script>
 
 <app>
-	<MenuDrawerComponent maxHeight='250px'>
+	<MenuDrawerComponent maxHeight='300px'>
 		<PartyEditMenu
 			partyMembers={battle.partyMembers}
 			teamMembers={team.members}
