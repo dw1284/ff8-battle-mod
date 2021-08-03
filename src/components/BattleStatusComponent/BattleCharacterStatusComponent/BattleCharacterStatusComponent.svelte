@@ -1,6 +1,6 @@
 <script>
   import _ from 'lodash';
-  import NumericInput from '../components/NumericInput.svelte';
+  import NumericInput from '../../NumericInput.svelte';
   
 	export let character;
   export let onBattleCharacterStatusChange = _.noop;

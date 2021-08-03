@@ -1,6 +1,6 @@
 <script>
 	import _ from 'lodash';
-	import TeamCharacterStatusComponent from './TeamCharacterStatusComponent.svelte';
+	import TeamCharacterStatusComponent from './TeamCharacterStatusComponent/TeamCharacterStatusComponent.svelte';
 	
 	export let teamMembers;
   export let onTeamMemberChange;

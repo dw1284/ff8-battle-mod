@@ -1,6 +1,6 @@
 <script>
 	import _ from 'lodash';
-	import BattleCharacterStatusComponent from './BattleCharacterStatusComponent.svelte';
+	import BattleCharacterStatusComponent from './BattleCharacterStatusComponent/BattleCharacterStatusComponent.svelte';
 	
 	export let enemies, partyMembers, enemyAttacksEnabled;
   export let onEnemyChange, onPartyMemberChange, onKillAllEnemiesClick, onDisableEnableEnemyAttacksClick, onDamageAllEnemiesClick, onCureAllPartyMembersClick;

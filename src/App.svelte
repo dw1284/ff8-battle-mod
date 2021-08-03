@@ -2,8 +2,8 @@
 	import _ from 'lodash';
 	import MenuDrawerComponent from './components/MenuDrawerComponent.svelte';
 	import PartyEditMenu from './components/PartyEditMenu.svelte';
-	import TeamStatusComponent from './components/TeamStatusComponent.svelte';
-	import BattleStatusComponent from './components/BattleStatusComponent.svelte';
+	import TeamStatusComponent from './components/TeamStatusComponent/TeamStatusComponent.svelte';
+	import BattleStatusComponent from './components/BattleStatusComponent/BattleStatusComponent.svelte';
 	
 	let ff8MenuIsOpen = false;
 	
