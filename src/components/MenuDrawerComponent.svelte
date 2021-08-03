@@ -24,9 +24,9 @@
 
 <svelte:window on:resize={disableTransitions} />
 
-<menu-drawer style={drawerStyle}>
+<menu-drawer style={drawerStyle} bind:clientHeight={currentHeight} bind:clientWidth={currentWidth}>
   <margin-spacer class="left" />
-  <drawer-content bind:clientHeight={currentHeight} bind:clientWidth={currentWidth}><slot /></drawer-content>
+  <drawer-content><slot /></drawer-content>
 	<drawer-handle on:click={toggleDrawerState}><div>| | | |</div></drawer-handle>
   <margin-spacer class="right" />
 </menu-drawer>
@@ -36,7 +36,6 @@
     position: fixed;
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 6px);
 		width: calc(100vw - 200px);
     min-width: 425px;
     left: 50%;
