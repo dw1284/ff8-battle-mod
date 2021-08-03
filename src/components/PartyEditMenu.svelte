@@ -28,6 +28,17 @@
 <party-edit-menu>
   <settings>
     <setting>
+      <setting-name>Team Members:</setting-name>
+      <options class="team-availability">
+        {#each teamMembers as teamMember}
+          <label>
+            <input type="checkbox" bind:checked={teamMember.isAvailable} on:change={onCheckboxChange} disabled={disabled === true || _.includes(disabled, 'team-availability')}>
+            {_.get(teamMember, 'displayName', '')}
+          </label>
+        {/each}
+      </options>
+    </setting>
+    <setting>
       <setting-name>Main Party:</setting-name>
       <options class="main-party">
         <!-- svelte-ignore a11y-no-onchange -->
@@ -44,20 +55,9 @@
         </select>
       </options>
     </setting>
-    <setting>
-      <setting-name>Team Members:</setting-name>
-      <options class="team-availability">
-        {#each teamMembers as teamMember}
-          <label>
-            <input type="checkbox" bind:checked={teamMember.isAvailable} on:change={onCheckboxChange} disabled={disabled === true || _.includes(disabled, 'team-availability')}>
-            {_.get(teamMember, 'displayName', '')}
-          </label>
-        {/each}
-      </options>
-    </setting>
   </settings>
   <note>
-    Note: Some setting require that you be out of the FF8 menu before they become editable
+    Some setting require that you be out of the FF8 menu before they become editable
   </note>
 </party-edit-menu>
 
@@ -113,5 +113,11 @@
   .team-availability label {
     width: 80px;
     font-weight: 500;
+  }
+  
+  note {
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 20px;
   }
 </style>
