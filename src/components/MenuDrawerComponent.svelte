@@ -1,11 +1,12 @@
 <script>
 	import _ from 'lodash';
   
-  export let maxHeight = 'calc(100vh - 13px)';
+  export let heightWhenClosed = '6px';                          // How many pixels of the drawer will peek out when its closed (at 0px only the handle shows)
+  export let maxHeight = `calc(100vh - ${heightWhenClosed})`;   // The maximum height that the drawer will expand to when it opens
   
   let isOpen = false;
   let transitionsEnabled = true;
-  let currentHeight;
+  let currentHeight, currentWidth;
   
   function toggleDrawerState() {
     isOpen = !isOpen;
@@ -18,14 +19,16 @@
     }, 100);
   };
   
-  $: drawerStyle = `max-height: ${maxHeight}; ${transitionsEnabled ? 'transition: bottom .5s;' : ''} ${isOpen ? `bottom: calc(100vh - ${currentHeight}px);` : 'bottom: calc(100vh - 12px);'}`;
+  $: drawerStyle = `max-height: ${maxHeight}; margin-left: -${currentWidth / 2}px; ${transitionsEnabled ? 'transition: bottom .5s;' : ''} ${isOpen ? `bottom: calc(100vh - ${currentHeight}px);` : `bottom: calc(100vh - ${heightWhenClosed});`}`;
 </script>
 
 <svelte:window on:resize={disableTransitions} />
 
 <menu-drawer style={drawerStyle}>
-  <drawer-content bind:clientHeight={currentHeight}><slot /></drawer-content>
+  <margin-spacer class="left" />
+  <drawer-content bind:clientHeight={currentHeight} bind:clientWidth={currentWidth}><slot /></drawer-content>
 	<drawer-handle on:click={toggleDrawerState}><div>| | | |</div></drawer-handle>
+  <margin-spacer class="right" />
 </menu-drawer>
 
 <style>
@@ -33,16 +36,65 @@
     position: fixed;
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 13px);
-		width: 100%;
+    height: calc(100vh - 6px);
+		width: calc(100vw - 200px);
+    min-width: 425px;
+    left: 50%;
     background: #adadad;
     box-shadow: 0 1px black;
 	}
   
+  margin-spacer {
+    position: absolute;
+    top: 0;
+    width: 125px;
+    height: calc(100% - 15px);
+    background: inherit;
+    box-shadow: 0 1px black;
+    z-index: -3;
+  }
+  
+  margin-spacer.left {
+    left: -125px;
+  }
+  
+  margin-spacer.right {
+    right: -125px;
+  }
+  
+  menu-drawer:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 25px;
+    height: 15px;
+    background: inherit;
+    transform-origin: 0 100%;
+    transform: skew(60deg);
+    box-shadow: -2px 1px black;
+    z-index: -2;
+  }
+  
+  menu-drawer:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 25px;
+    height: 15px;
+    background: inherit;
+    transform-origin: 0 100%;
+    transform: skew(-60deg);
+    box-shadow: 3px 1px black;
+    z-index: -2;
+  }
+  
   drawer-content {
     flex-grow: 1;
+    margin-bottom: 15px;
+    background: inherit;
     overflow: hidden;
-    margin-bottom: 12px;
   }
   
   drawer-handle {
@@ -60,14 +112,8 @@
     right: 0;
     bottom: -12px;
     background: inherit;
-    box-shadow: 0 1.5px black;
     cursor: pointer;
     user-select: none;
-  }
-  
-  drawer-handle div {
-    position: relative;
-    top: -2px;
   }
   
   drawer-handle:before {
@@ -81,7 +127,7 @@
     transform-origin: 0 100%;
     transform: skew(45deg);
     z-index: -1;
-    box-shadow: -1px 1px black;
+    box-shadow: -1px .5px black;
   }
   
   drawer-handle:after {
@@ -95,6 +141,11 @@
     transform-origin: 0 100%;
     transform: skew(-45deg);
     z-index: -1;
-    box-shadow: 2px 1px black;
+    box-shadow: 2px .5px black;
+  }
+  
+  drawer-handle div {
+    position: relative;
+    top: -2px;
   }
 </style>
