@@ -19,7 +19,7 @@
     }, 100);
   };
   
-  $: drawerStyle = `max-height: ${maxHeight}; margin-left: -${currentWidth / 2}px; ${transitionsEnabled ? 'transition: bottom .5s;' : ''} ${isOpen ? `bottom: calc(100vh - ${currentHeight}px);` : `bottom: calc(100vh - ${heightWhenClosed});`}`;
+  $: drawerStyle = `max-height: ${maxHeight}; margin-left: -${currentWidth / 2}px; ${transitionsEnabled ? 'transition: bottom .5s;' : ''} ${isOpen ? `bottom: calc(100% - ${currentHeight}px);` : `bottom: calc(100% - ${heightWhenClosed});`}`;
 </script>
 
 <svelte:window on:resize={disableTransitions} />
