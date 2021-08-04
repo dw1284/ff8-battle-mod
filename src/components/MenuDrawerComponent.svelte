@@ -47,7 +47,7 @@
     position: absolute;
     top: 0;
     width: 125px;
-    height: calc(100% - 15px);
+    height: calc(100% - 30px);
     background: inherit;
     box-shadow: 0 1px black;
     z-index: -3;
@@ -66,11 +66,11 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 25px;
-    height: 15px;
+    width: 40px;
+    height: 30px;
     background: inherit;
     transform-origin: 0 100%;
-    transform: skew(60deg);
+    transform: skew(50deg);
     box-shadow: -2px 1px black;
     z-index: -2;
   }
@@ -80,11 +80,11 @@
     position: absolute;
     right: 0;
     bottom: 0;
-    width: 25px;
-    height: 15px;
+    width: 40px;
+    height: 30px;
     background: inherit;
     transform-origin: 0 100%;
-    transform: skew(-60deg);
+    transform: skew(-50deg);
     box-shadow: 3px 1px black;
     z-index: -2;
   }
