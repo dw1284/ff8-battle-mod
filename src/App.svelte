@@ -155,12 +155,22 @@
 			teamMembers={team.members}
 			onTeamMemberChange={team.sendUpdatedTeamMemberValues} />
 	{:else}
-		Looking for process FF8_EN.exe
+    <default>
+      Looking for process FF8_EN.exe
+    </default>
 	{/if}
 </app>
 
 <style>
 	app {
-		display: inline-flex;
+		display: flex;
+    height: 100%;
 	}
+  
+  default {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
 </style>

@@ -1,3 +1,7 @@
+html, body {
+  height: 100%;
+}
+
 body {
 	background: linear-gradient(180deg, #4C4C4C, #00000075);
 	background-repeat: no-repeat;
