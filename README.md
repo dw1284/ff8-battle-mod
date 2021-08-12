@@ -8,6 +8,8 @@ A custom tool which allows you to tinker with your FF8 gameplay experience in re
 * Manipulate enemies in battle
 * Disable field battles
 
+Works with Steam English version **FF8_EN.exe**.
+
 ## Features
 -----------
 ### Edit your party
