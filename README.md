@@ -1,3 +1,27 @@
+# FF8 Battle and Party Editor
+
+A custom tool which allows you to tinker with your FF8 gameplay experience in real time.
+
+* Edit your team
+* Edit your party
+* Edit your inventory
+* Manipulate enemies in battle
+* Disable field battles
+
+## Features
+-----------
+### Edit your party
+
+Swap characters into your party at any time...even characters you do not have access to yet.
+
+![Party Editor](./assets/party_edit.gif)
+
+### Edit your stats
+
+Edit your character's level, hp, inventory, and more.
+
+![Inventory Editor](./assets/inventory_edit.gif)
+
 # Development
 
 **Setup and run:**
